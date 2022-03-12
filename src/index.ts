@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 class KeyRemap {
   from_data_key: string;
@@ -43,81 +43,83 @@ const KEYS_TO_REMAP: KeyRemap[] = [
 ];
 
 function find_key(root: Element, key: string): Element {
-  let key_element = root.querySelector(`svg[data-key='${key}']`);
+  const key_element = root.querySelector(`svg[data-key='${key}']`);
 
   if (key_element == null) {
     throw new TypeError('The provided key was not a valid data-key entry!');
   }
 
-  return key_element
+  return key_element;
 }
 
 function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
   // We have to run this in two passes otherwise we risk to overwrite previous changes
-  for (let map of mappings) {
+  for (const map of mappings) {
     try {
-      let key_element = find_key(root, map.from_data_key);
+      const key_element = find_key(root, map.from_data_key);
       key_element.setAttribute('data-key', `${map.from_data_key}_tmp`);
-      let key_text = key_element.querySelector('text');
+      const key_text = key_element.querySelector('text');
       key_text.innerHTML = map.to_text;
-    }
-    catch (e) {
+    } catch (e) {
       if (e instanceof TypeError) {
         console.warn(e);
       } else {
-        throw(e);
+        throw e;
       }
     }
-  };
+  }
 
-  for (let map of mappings) {
+  for (const map of mappings) {
     try {
-      let key_element = find_key(root, `${map.from_data_key}_tmp`);
+      const key_element = find_key(root, `${map.from_data_key}_tmp`);
       key_element.setAttribute('data-key', map.to_data_key);
-    }
-    catch (e) {
+    } catch (e) {
       if (e instanceof TypeError) {
         console.warn(e);
       } else {
-        throw(e);
+        throw e;
       }
     }
-  };
-};
-
+  }
+}
 
 function find_keyboard(): Element {
-  const entry_point = document.getElementById("key-zone-a");
+  const entry_point = document.getElementById('key-zone-a');
   let current_parent = entry_point.parentElement;
-  while (current_parent.tagName.localeCompare('svg', undefined, {sensitivity: 'accent'}) != 0) {
+  while (
+    current_parent.tagName.localeCompare('svg', undefined, {
+      sensitivity: 'accent',
+    }) != 0
+  ) {
     current_parent = current_parent.parentElement;
-  };
+  }
 
-  for (let child of current_parent.children) {
+  for (const child of current_parent.children) {
     if (child.children.length > 2) {
-      console.log(child);
-      console.log(`And it's ${child.children.length} long!`);
-      console.log(child.children);
-      if (child.tagName.localeCompare('svg', undefined, {sensitivity: 'accent'}) == 0) {
-        console.log('It\'s an SVG!');
+      if (
+        child.tagName.localeCompare('svg', undefined, {
+          sensitivity: 'accent',
+        }) == 0
+      ) {
         return child;
       }
     }
   }
 
   throw new Error('Keyboard not found!');
-};
+}
 
 VM.observe(document.body, () => {
-  const node = document.querySelector(`svg[data-key=${KEYS_TO_REMAP.at(-1).from_data_key}]`);
+  const node = document.querySelector(
+    `svg[data-key=${KEYS_TO_REMAP.at(-1).from_data_key}]`
+  );
   if (node) {
-    console.log(node);
     let keyboard_element: Element = undefined;
     try {
       keyboard_element = find_keyboard();
     } catch (e) {
       console.error(e);
-    };
+    }
 
     if (keyboard_element == null) {
       return false;
