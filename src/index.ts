@@ -1,45 +1,193 @@
 'use strict';
 
+// CSS for finger areas support
+import stylesheet from './style.css';
+
+const style = document.createElement('style');
+style.textContent = stylesheet;
+document.head.append(style);
+
+enum FingerZone {
+  One = 'col-dh_zone-a',
+  Two = 'col-dh_zone-b',
+}
 class KeyRemap {
   from_data_key: string;
   to_data_key: string;
   to_text: string;
+  zone: FingerZone;
 }
 
 // QWERTY to Colemak-dh remap definition
 // Some entries are remapped, but that's to fix the lables of the official Colemak mapping, which changes the label
 // but not the attribute `data-key`
+
 const KEYS_TO_REMAP: KeyRemap[] = [
   // Top row
-  { from_data_key: 'KeyQ', to_data_key: 'KeyQ', to_text: 'Q' },
-  { from_data_key: 'KeyW', to_data_key: 'KeyW', to_text: 'W' },
-  { from_data_key: 'KeyE', to_data_key: 'KeyF', to_text: 'F' },
-  { from_data_key: 'KeyR', to_data_key: 'KeyP', to_text: 'P' },
-  { from_data_key: 'KeyT', to_data_key: 'KeyB', to_text: 'B' },
-  { from_data_key: 'KeyY', to_data_key: 'KeyJ', to_text: 'J' },
-  { from_data_key: 'KeyU', to_data_key: 'KeyL', to_text: 'L' },
-  { from_data_key: 'KeyI', to_data_key: 'KeyU', to_text: 'U' },
-  { from_data_key: 'KeyO', to_data_key: 'KeyY', to_text: 'Y' },
-  { from_data_key: 'KeyP', to_data_key: 'Semicolon', to_text: ';' },
+  {
+    from_data_key: 'KeyQ',
+    to_data_key: 'KeyQ',
+    to_text: 'Q',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyW',
+    to_data_key: 'KeyW',
+    to_text: 'W',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyE',
+    to_data_key: 'KeyF',
+    to_text: 'F',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyR',
+    to_data_key: 'KeyP',
+    to_text: 'P',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyT',
+    to_data_key: 'KeyB',
+    to_text: 'B',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyY',
+    to_data_key: 'KeyJ',
+    to_text: 'J',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyU',
+    to_data_key: 'KeyL',
+    to_text: 'L',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyI',
+    to_data_key: 'KeyU',
+    to_text: 'U',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyO',
+    to_data_key: 'KeyY',
+    to_text: 'Y',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyP',
+    to_data_key: 'Semicolon',
+    to_text: ';',
+    zone: undefined,
+  },
   // Home row
-  { from_data_key: 'KeyA', to_data_key: 'KeyA', to_text: 'A' },
-  { from_data_key: 'KeyS', to_data_key: 'KeyR', to_text: 'R' },
-  { from_data_key: 'KeyD', to_data_key: 'KeyS', to_text: 'S' },
-  { from_data_key: 'KeyF', to_data_key: 'KeyT', to_text: 'T' },
-  { from_data_key: 'KeyG', to_data_key: 'KeyG', to_text: 'G' },
-  { from_data_key: 'KeyH', to_data_key: 'KeyM', to_text: 'M' },
-  { from_data_key: 'KeyJ', to_data_key: 'KeyN', to_text: 'N' },
-  { from_data_key: 'KeyK', to_data_key: 'KeyE', to_text: 'E' },
-  { from_data_key: 'KeyL', to_data_key: 'KeyI', to_text: 'I' },
-  { from_data_key: 'Semicolon', to_data_key: 'KeyO', to_text: 'O' },
+  {
+    from_data_key: 'KeyA',
+    to_data_key: 'KeyA',
+    to_text: 'A',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyS',
+    to_data_key: 'KeyR',
+    to_text: 'R',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyD',
+    to_data_key: 'KeyS',
+    to_text: 'S',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyF',
+    to_data_key: 'KeyT',
+    to_text: 'T',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyG',
+    to_data_key: 'KeyG',
+    to_text: 'G',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyH',
+    to_data_key: 'KeyM',
+    to_text: 'M',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyJ',
+    to_data_key: 'KeyN',
+    to_text: 'N',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyK',
+    to_data_key: 'KeyE',
+    to_text: 'E',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyL',
+    to_data_key: 'KeyI',
+    to_text: 'I',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'Semicolon',
+    to_data_key: 'KeyO',
+    to_text: 'O',
+    zone: FingerZone.Two,
+  },
   // Bottom row
-  { from_data_key: 'KeyZ', to_data_key: 'KeyX', to_text: 'X' },
-  { from_data_key: 'KeyX', to_data_key: 'KeyC', to_text: 'C' },
-  { from_data_key: 'KeyC', to_data_key: 'KeyD', to_text: 'D' },
-  { from_data_key: 'KeyV', to_data_key: 'KeyV', to_text: 'V' },
-  { from_data_key: 'KeyB', to_data_key: 'KeyZ', to_text: 'Z' },
-  { from_data_key: 'KeyN', to_data_key: 'KeyK', to_text: 'K' },
-  { from_data_key: 'KeyM', to_data_key: 'KeyH', to_text: 'H' },
+  {
+    from_data_key: 'KeyZ',
+    to_data_key: 'KeyX',
+    to_text: 'X',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyX',
+    to_data_key: 'KeyC',
+    to_text: 'C',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyC',
+    to_data_key: 'KeyD',
+    to_text: 'D',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyV',
+    to_data_key: 'KeyV',
+    to_text: 'V',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyB',
+    to_data_key: 'KeyZ',
+    to_text: 'Z',
+    zone: FingerZone.Two,
+  },
+  {
+    from_data_key: 'KeyN',
+    to_data_key: 'KeyK',
+    to_text: 'K',
+    zone: FingerZone.One,
+  },
+  {
+    from_data_key: 'KeyM',
+    to_data_key: 'KeyH',
+    to_text: 'H',
+    zone: FingerZone.One,
+  },
 ];
 
 function find_key(root: Element, key: string): Element {
@@ -69,10 +217,21 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
     }
   }
 
+  const url_components: string[] = document.URL.split('/');
+  const last_url_component: string = url_components[url_components.length - 1];
+  console.log('Current url: %s; URL end: %s', document.URL, last_url_component);
+  const is_profile_page =
+    last_url_component.localeCompare('profile', undefined, {
+      sensitivity: 'accent',
+    }) != 0;
+
   for (const map of mappings) {
     try {
       const key_element = find_key(root, `${map.from_data_key}_tmp`);
       key_element.setAttribute('data-key', map.to_data_key);
+      if (is_profile_page && map.zone != null) {
+        key_element.classList.add(map.zone);
+      }
     } catch (e) {
       if (e instanceof TypeError) {
         console.warn(e);

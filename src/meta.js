@@ -2,7 +2,7 @@
 // @name          Colemak-DH layout converter
 // @namespace     https://github.com/Jazzinghen
 // @description   Simple script to change the Colemak layout to Colemak-DH on Keybr.com
-// @match         https://www.keybr.com/
+// @match         https://www.keybr.com/*
 // @icon          https://www.google.com/s2/favicons?domain=keybr.com
 // @grant         none
 // @version       process.env.VERSION

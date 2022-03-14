@@ -1,4 +1,8 @@
 /* global css */
-body {
-  @apply bg-gray-200;
+.col-dh_zone-a rect {
+  fill: url(#key-zone-a);
+}
+
+.col-dh_zone-b rect {
+  fill: url(#key-zone-b);
 }
