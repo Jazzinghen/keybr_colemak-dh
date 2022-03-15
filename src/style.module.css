@@ -1,4 +1,9 @@
 /* global css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .col-dh_zone-a rect {
   fill: url(#key-zone-a);
 }

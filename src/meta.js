@@ -5,7 +5,8 @@
 // @supportURL    https://github.com/Jazzinghen/keybr_colemak-dh/issues
 // @match         https://www.keybr.com/*
 // @icon          https://www.google.com/s2/favicons?domain=keybr.com
-// @grant         none
+// @grant         GM.setValue
+// @grant         GM.getValue
 // @version       process.env.VERSION
 // @author        process.env.AUTHOR
 // @require       https://cdn.jsdelivr.net/combine/npm/@violentmonkey/dom@2,npm/@violentmonkey/ui@0.7

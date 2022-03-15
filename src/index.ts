@@ -1,7 +1,5 @@
-'use strict';
-
 // CSS for finger areas support
-import stylesheet from './style.css';
+import styles, { stylesheet } from './style.module.css';
 
 const style = document.createElement('style');
 style.textContent = stylesheet;
@@ -10,12 +8,20 @@ document.head.append(style);
 enum FingerZone {
   One = 'col-dh_zone-a',
   Two = 'col-dh_zone-b',
+  None = '',
 }
 class KeyRemap {
   from_data_key: string;
   to_data_key: string;
   to_text: string;
   zone: FingerZone;
+
+  constructor(from: string, data: string, text: string, zone: FingerZone) {
+    this.from_data_key = from;
+    this.to_data_key = data;
+    this.to_text = text;
+    this.zone = zone;
+  }
 }
 
 // QWERTY to Colemak-dh remap definition
@@ -82,7 +88,7 @@ const KEYS_TO_REMAP: KeyRemap[] = [
     from_data_key: 'KeyP',
     to_data_key: 'Semicolon',
     to_text: ';',
-    zone: undefined,
+    zone: FingerZone.None,
   },
   // Home row
   {
@@ -207,7 +213,9 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
       const key_element = find_key(root, map.from_data_key);
       key_element.setAttribute('data-key', `${map.from_data_key}_tmp`);
       const key_text = key_element.querySelector('text');
-      key_text.innerHTML = map.to_text;
+      if (key_text != null) {
+        key_text.innerHTML = map.to_text;
+      }
     } catch (e) {
       if (e instanceof TypeError) {
         console.warn(e);
@@ -244,13 +252,22 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
 
 function find_keyboard(): Element {
   const entry_point = document.getElementById('key-zone-a');
+  if (entry_point == null) {
+    throw new Error('Keyboard not found!');
+  }
+
   let current_parent = entry_point.parentElement;
   while (
+    current_parent != null &&
     current_parent.tagName.localeCompare('svg', undefined, {
       sensitivity: 'accent',
     }) != 0
   ) {
     current_parent = current_parent.parentElement;
+  }
+
+  if (current_parent == null) {
+    throw new Error('Keyboard not found!');
   }
 
   for (const child of current_parent.children) {
@@ -269,23 +286,30 @@ function find_keyboard(): Element {
 }
 
 VM.observe(document.body, () => {
+  if (KEYS_TO_REMAP == null) {
+    console.error('No layout remap data available!');
+    return false;
+  }
+
   const node = document.querySelector(
-    `svg[data-key=${KEYS_TO_REMAP.at(-1).from_data_key}]`
+    `svg[data-key=${KEYS_TO_REMAP[KEYS_TO_REMAP.length - 1].from_data_key}]`
   );
-  if (node) {
-    let keyboard_element: Element = undefined;
+
+  if (node != null) {
     try {
-      keyboard_element = find_keyboard();
+      const keyboard_element = find_keyboard();
+
+      if (keyboard_element == null) {
+        return false;
+      }
+
+      remap_keys(keyboard_element, KEYS_TO_REMAP);
     } catch (e) {
       console.error(e);
     }
 
-    if (keyboard_element == null) {
-      return false;
-    }
-
-    remap_keys(keyboard_element, KEYS_TO_REMAP);
-
     return true;
+  } else {
+    return false;
   }
 });
