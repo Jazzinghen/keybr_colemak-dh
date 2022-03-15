@@ -1,7 +1,7 @@
 // CSS for finger areas support
-import styles, { stylesheet } from './style.module.css';
+import { stylesheet } from './style.module.css';
 
-const style = document.createElement('style');
+const style: HTMLStyleElement = document.createElement('style');
 style.textContent = stylesheet;
 document.head.append(style);
 
@@ -197,7 +197,9 @@ const KEYS_TO_REMAP: KeyRemap[] = [
 ];
 
 function find_key(root: Element, key: string): Element {
-  const key_element = root.querySelector(`svg[data-key='${key}']`);
+  const key_element: Element | null = root.querySelector(
+    `svg[data-key='${key}']`
+  );
 
   if (key_element == null) {
     throw new TypeError('The provided key was not a valid data-key entry!');
@@ -210,9 +212,9 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
   // We have to run this in two passes otherwise we risk to overwrite previous changes
   for (const map of mappings) {
     try {
-      const key_element = find_key(root, map.from_data_key);
+      const key_element: Element = find_key(root, map.from_data_key);
       key_element.setAttribute('data-key', `${map.from_data_key}_tmp`);
-      const key_text = key_element.querySelector('text');
+      const key_text: Element | null = key_element.querySelector('text');
       if (key_text != null) {
         key_text.innerHTML = map.to_text;
       }
@@ -227,8 +229,7 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
 
   const url_components: string[] = document.URL.split('/');
   const last_url_component: string = url_components[url_components.length - 1];
-  console.log('Current url: %s; URL end: %s', document.URL, last_url_component);
-  const is_profile_page =
+  const is_profile_page: boolean =
     last_url_component.localeCompare('profile', undefined, {
       sensitivity: 'accent',
     }) != 0;
@@ -237,7 +238,7 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
     try {
       const key_element = find_key(root, `${map.from_data_key}_tmp`);
       key_element.setAttribute('data-key', map.to_data_key);
-      if (is_profile_page && map.zone != null) {
+      if (is_profile_page && map.zone != FingerZone.None) {
         key_element.classList.add(map.zone);
       }
     } catch (e) {
@@ -251,12 +252,12 @@ function remap_keys(root: Element, mappings: ReadonlyArray<KeyRemap>) {
 }
 
 function find_keyboard(): Element {
-  const entry_point = document.getElementById('key-zone-a');
+  const entry_point: HTMLElement | null = document.getElementById('key-zone-a');
   if (entry_point == null) {
     throw new Error('Keyboard not found!');
   }
 
-  let current_parent = entry_point.parentElement;
+  let current_parent: HTMLElement | null = entry_point.parentElement;
   while (
     current_parent != null &&
     current_parent.tagName.localeCompare('svg', undefined, {
@@ -291,25 +292,25 @@ VM.observe(document.body, () => {
     return false;
   }
 
-  const node = document.querySelector(
+  const node: Element | null = document.querySelector(
     `svg[data-key=${KEYS_TO_REMAP[KEYS_TO_REMAP.length - 1].from_data_key}]`
   );
 
-  if (node != null) {
-    try {
-      const keyboard_element = find_keyboard();
-
-      if (keyboard_element == null) {
-        return false;
-      }
-
-      remap_keys(keyboard_element, KEYS_TO_REMAP);
-    } catch (e) {
-      console.error(e);
-    }
-
-    return true;
-  } else {
+  if (node == null) {
     return false;
   }
+
+  try {
+    const keyboard_element: Element = find_keyboard();
+
+    if (keyboard_element == null) {
+      return false;
+    }
+
+    remap_keys(keyboard_element, KEYS_TO_REMAP);
+  } catch (e) {
+    console.error(e);
+  }
+
+  return true;
 });
