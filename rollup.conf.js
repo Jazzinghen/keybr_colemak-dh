@@ -3,10 +3,8 @@ const { getRollupPlugins } = require('@gera2ld/plaid');
 const userscript = require('rollup-plugin-userscript');
 const pkg = require('./package.json');
 
-import replace from '@rollup/plugin-replace';
-
 const DIST = 'dist';
-const FILENAME = 'index';
+const FILENAME = 'keybr_colemak-dh';
 
 const bundleOptions = {
   extend: true,

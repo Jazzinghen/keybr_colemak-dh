@@ -1,6 +1,6 @@
 {
   "name": "keybr_colemak-dh",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple script to change the Colemak layout to Colemak-DH on Keybr.com",
   "author": "Michele Bianchi",
   "license": "MIT",
